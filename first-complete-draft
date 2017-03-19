@@ -1,0 +1,191 @@
+/*
+ * WMX667
+ * first arduino project
+ */
+
+#include "FastLED.h"
+#define NUM_LEDS 6  // # of LEDS in the strip
+#define DATA_PIN 3 // Output Pin to Data Line on Strip
+#define BRIGHTNESS 255
+#define COLOR_ORDER GRB
+#define CHIPSET WS2812B
+#define BPM 6
+#define DIMMEST 20
+#define BRIGHTEST 255
+#define GET_MILLIS millis
+#define UPDATES_PER_SECOND 100
+
+CRGBPalette16 currentPalette;
+TBlendType    currentBlending;
+CRGB leds[NUM_LEDS];
+
+
+
+
+const int  buttonPin = 10;    // the pin that the pushbutton is attached to
+
+// Variables will change:
+int buttonPushCounter = 0;   // counter for the number of button presses
+int buttonState = 0;         // current state of the button
+int lastButtonState = 0;     // previous state of the button
+
+// the following variables are unsigned long's because the time, measured in miliseconds,
+// will quickly become a bigger number than can be stored in an int.
+unsigned long lastDebounceTime = 0;  // the last time the output pin was toggled
+unsigned long debounceDelay = 50;    // the debounce time; increase if the output flickers
+
+void setup() {
+  // initialize the button pin as a input:
+  pinMode(buttonPin, INPUT);
+ 
+  Serial.begin(9600);
+  FastLED.addLeds<CHIPSET, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS); //add leds
+  currentBlending = LINEARBLEND;
+}
+
+
+void loop() {
+  // read the pushbutton input pin:
+  buttonState = digitalRead(buttonPin);
+
+  // compare the buttonState to its previous state
+  if (buttonState != lastButtonState) {
+    // if the state has changed, increment the counter
+    if (buttonState == HIGH) {
+      // if the current state is HIGH then the button goes from off to on:
+      buttonPushCounter++;
+      Serial.println("on");
+      Serial.print("number of button pushes:  ");
+      Serial.println(buttonPushCounter);
+    } else {
+      // if the current state is LOW then the button goes from on to off:
+      Serial.println("off");
+    }
+  }
+  // save the current state as the last state,
+  //for next time through the loop
+  lastButtonState = buttonState;
+
+  
+
+//white light
+if (buttonPushCounter == 1) {
+  leds[0].setRGB(255, 200, 230);  
+  leds[1].setRGB(200, 230, 255);  
+  leds[2].setRGB(200, 255, 230);
+  leds[3].setRGB(255, 230, 200);  
+  leds[4].setRGB(230, 230, 255);  
+  leds[5].setRGB(230, 255, 255);
+
+  FastLED.setBrightness( 230 );
+  FastLED.show(); 
+  
+}  
+
+
+//black or off
+if (buttonPushCounter == 2) {
+  leds[0].setRGB(0, 0, 0);  
+  leds[1].setRGB(0, 0, 0);  
+  leds[2].setRGB(0, 0, 0);
+  leds[3].setRGB(0, 0, 0);  
+  leds[4].setRGB(0, 0, 0);  
+  leds[5].setRGB(0, 0, 0);
+
+  FastLED.setBrightness( 10 );
+  FastLED.show();
+   
+}  
+
+//reset back to first mode
+if (buttonPushCounter == 3) {buttonPushCounter = 0;
+}
+
+
+int reading = digitalRead(buttonPin);
+
+  // check to see if you just pressed the button
+  // (i.e. the input went from LOW to HIGH),  and you've waited
+  // long enough since the last press to ignore any noise:
+
+  // If the switch changed, due to noise or pressing:
+  if (reading != lastButtonState) {
+    // reset the debouncing timer
+    lastDebounceTime = millis();
+  }
+
+  if ((millis() - lastDebounceTime) > debounceDelay) {
+    // whatever the reading is at, it's been there for longer
+    // than the debounce delay, so take it as the actual current state:
+
+    // if the button state has changed:
+    if (reading != buttonState) {
+      buttonState = reading;
+
+      // only toggle the LED if the new button state is HIGH
+      if (buttonState == HIGH) {
+       buttonPushCounter++;
+      }
+    }
+  }
+
+
+ChangePalettePeriodically();
+    
+    static uint8_t startIndex = 0;
+    startIndex = startIndex + 1; /* motion speed */
+
+//pulse the master brightness level in and out as a sin wave according to bpm
+    uint8_t bright = beatsin8( BPM, DIMMEST, BRIGHTEST); 
+    FastLED.setBrightness( bright ); 
+    FastLED.show();
+ 
+}
+
+
+
+//CYCLE THROUGH COLOR PALLETTES
+void ChangePalettePeriodically()
+{
+    uint8_t secondHand = (millis() / 1000) % 30;
+    static uint8_t lastSecond = 30;
+    
+    if( lastSecond != secondHand) {
+        lastSecond = secondHand;
+        if( secondHand ==  0)  { Purp(); currentBlending = LINEARBLEND;  }
+        if( secondHand == 10)  { Aqua(); currentBlending = LINEARBLEND; }
+        if( secondHand == 20)  { Green(); currentBlending = LINEARBLEND; }        
+    }
+}
+
+
+/*i was originally attempting to use color palettes 
+but i think this bottom part might be bloated code
+as i don't appear to be actually using any of the color palette functionality
+*/
+
+
+//SETUP COLOR PALLETTE
+void Purp()
+{
+    CRGB purple = leds[0].setRGB(170,0,0); leds[1].setRGB(0, 32, 0); leds[2].setRGB(0, 0, 255);
+                  leds[3].setRGB(170,0,0); leds[4].setRGB(0, 32, 0); leds[5].setRGB(0, 0, 255);
+    currentPalette = CRGBPalette16( purple );
+}
+
+void Aqua()
+{
+    CRGB aqua = leds[0].setRGB(0,255,0);  leds[1].setRGB(0, 0, 0);  leds[2].setRGB(0, 0, 255);
+                leds[3].setRGB(0,255,0);  leds[4].setRGB(0, 0, 0);  leds[5].setRGB(0, 0, 255);
+    currentPalette = CRGBPalette16( aqua );
+}
+
+void Green()
+{
+    CRGB green = leds[0].setRGB(0,0,0);  leds[1].setRGB(230, 0, 0);  leds[2].setRGB(0, 255, 0); 
+                 leds[3].setRGB(0,0,0);  leds[4].setRGB(230, 0, 0);  leds[5].setRGB(0, 255, 0); 
+    currentPalette = CRGBPalette16( green );
+}
+
+
+//i was originally attempting to use color pallettes but i think this bottom part might be bloated code

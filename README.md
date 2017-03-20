@@ -21,8 +21,8 @@ The loop and power are still runnning, so this is not a true off switch.
 A simple NO push-button switch selects which mode the lamp should be in.
 
 NOTES - ISSUES - WHAT DID WE LEARN!
-The pulsing / color change mode was the most difficult to figure out. I was initially using the Delay function,
-but I learned a very important lesson - anything I attempted to do to fade the brightness gradually and consistently 
+The pulsing / color change mode was the most difficult to figure out. I was initially using Delay() to transition between colors,
+but I learned a very important lesson - anything I attempted to do to fade the master brightness gradually and consistently 
 over time was not happening because the Delay wasn't letting it keep going consistently after each color change.
 I learned about millis() and how to get the Arduino to call back on itself for the time in order to sequence events BY TIME!
 This way, the loop isn't doing any deadstops during the fading process. 

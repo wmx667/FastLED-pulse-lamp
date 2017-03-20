@@ -30,7 +30,7 @@ It made my nonfunctional, bloated code actually work and look way better.
 I also learned about beatsin8, a very useful function for creating a sine wave of values at a given tempo in FastLED. 
 I bet it would create some interesting effects if assigned to a color value rather than the brightness.
 
-Coming from an electronic music background, the ieda of sequencing events, sequencing by time, and sine waves 
-(which to me translate as a type of LFO) made a lot of sense to me, and gave me quite a few ideas for future projects.
+Coming from an electronic music background, the idea of sequencing events, sequencing by time, and sine waves 
+(which to me translate as a type of LFO) made a lot of sense, and gave me quite a few ideas for future projects.
 
 I'm still not sure about my syntax in terms of talking about the pieces of code / project, but I'll get there!

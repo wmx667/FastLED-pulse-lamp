@@ -1,6 +1,6 @@
 # FastLED-pulse-lamp
 
-FastLED + Arduino lamp project with multiple modes 
+FastLED + Arduino UNO + WS2812B lamp project with multiple modes 
 
 This is my first Arduino project, coming from 0 coding experience.
 

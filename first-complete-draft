@@ -15,16 +15,13 @@
 #define GET_MILLIS millis
 #define UPDATES_PER_SECOND 100
 
-CRGBPalette16 currentPalette;
-TBlendType    currentBlending;
 CRGB leds[NUM_LEDS];
-
-
-
+CRGBPalette16 currentPalette;  //not sure i needed or used any of the palette or blending functions at all
+TBlendType    currentBlending;
 
 const int  buttonPin = 10;    // the pin that the pushbutton is attached to
 
-// Variables will change:
+// Variables that will change:
 int buttonPushCounter = 0;   // counter for the number of button presses
 int buttonState = 0;         // current state of the button
 int lastButtonState = 0;     // previous state of the button
@@ -38,11 +35,10 @@ void setup() {
   // initialize the button pin as a input:
   pinMode(buttonPin, INPUT);
  
-  Serial.begin(9600);
+  Serial.begin(9600); //you can monitor or test button pushes with serial monitor
   FastLED.addLeds<CHIPSET, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS); //add leds
   currentBlending = LINEARBLEND;
 }
-
 
 void loop() {
   // read the pushbutton input pin:
@@ -79,7 +75,6 @@ if (buttonPushCounter == 1) {
 
   FastLED.setBrightness( 230 );
   FastLED.show(); 
-  
 }  
 
 
@@ -93,26 +88,23 @@ if (buttonPushCounter == 2) {
   leds[5].setRGB(0, 0, 0);
 
   FastLED.setBrightness( 10 );
-  FastLED.show();
-   
+  FastLED.show();   
 }  
 
 //reset back to first mode
 if (buttonPushCounter == 3) {buttonPushCounter = 0;
 }
 
-
 int reading = digitalRead(buttonPin);
 
   // check to see if you just pressed the button
   // (i.e. the input went from LOW to HIGH),  and you've waited
   // long enough since the last press to ignore any noise:
-
   // If the switch changed, due to noise or pressing:
   if (reading != lastButtonState) {
     // reset the debouncing timer
     lastDebounceTime = millis();
-  }
+}
 
   if ((millis() - lastDebounceTime) > debounceDelay) {
     // whatever the reading is at, it's been there for longer
@@ -129,7 +121,6 @@ int reading = digitalRead(buttonPin);
     }
   }
 
-
 ChangePalettePeriodically();
     
     static uint8_t startIndex = 0;
@@ -138,11 +129,8 @@ ChangePalettePeriodically();
 //pulse the master brightness level in and out as a sin wave according to bpm
     uint8_t bright = beatsin8( BPM, DIMMEST, BRIGHTEST); 
     FastLED.setBrightness( bright ); 
-    FastLED.show();
- 
+    FastLED.show(); 
 }
-
-
 
 //CYCLE THROUGH COLOR PALLETTES
 void ChangePalettePeriodically()
@@ -158,12 +146,10 @@ void ChangePalettePeriodically()
     }
 }
 
-
 /*i was originally attempting to use color palettes 
 but i think this bottom part might be bloated code
 as i don't appear to be actually using any of the color palette functionality
 */
-
 
 //SETUP COLOR PALLETTE
 void Purp()
@@ -186,5 +172,3 @@ void Green()
                  leds[3].setRGB(0,0,0);  leds[4].setRGB(230, 0, 0);  leds[5].setRGB(0, 255, 0); 
     currentPalette = CRGBPalette16( green );
 }
-
-
